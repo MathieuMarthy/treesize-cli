@@ -9,11 +9,11 @@ namespace fs = std::filesystem;
 
 FileModel Treesize::getDirectorySize(const std::string &path)
 {
-    FileModel *rootDir = new FileModel(path);
+    FileModel rootDir(path);
 
-    Treesize::scanDirectory(*rootDir);
+    Treesize::scanDirectory(rootDir);
 
-    return *rootDir;
+    return rootDir;
 }
 
 void Treesize::scanDirectory(FileModel &parentDirectory)
@@ -26,18 +26,17 @@ void Treesize::scanDirectory(FileModel &parentDirectory)
         }
 
         // attach the file to his parent
-        FileModel *file = new FileModel(entry.path().string());
-        parentDirectory.childs.push_back(*file);
-        std::cout << file->path << std::endl;
+        parentDirectory.childs.emplace_back(entry.path().string());
+        FileModel &file = parentDirectory.childs.back();
 
         if (entry.is_directory())
         {
             // recursive call
-            Treesize::scanDirectory(*file);
+            Treesize::scanDirectory(file);
         }
         else
         {
-            file->size = entry.file_size();
+            file.size = entry.file_size();
         }
     }
 }

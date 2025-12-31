@@ -13,7 +13,7 @@ public:
     }
 
     std::string path;
-    uintmax_t size = 0;
+    long size = 0;
     std::vector<FileModel> childs = std::vector<FileModel>();
 
     int getTotalSize();

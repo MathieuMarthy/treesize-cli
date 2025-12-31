@@ -14,7 +14,8 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    Treesize::getDirectorySize(argv[1]);
+    FileModel dir = Treesize::getDirectorySize(argv[1]);
+    std::cout << "Total size of the directory: " << dir.getTotalSize() << std::endl;
 
     return 0;
 }
