@@ -1,7 +1,10 @@
 find_package(stb REQUIRED)
 
 add_library(core STATIC
-    main.cpp
+    treesize.h
+    treesize.cpp
+    fileModel.h
+    fileModel.cpp
 )
 
 target_include_directories(core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
