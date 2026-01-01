@@ -1,21 +1,24 @@
 #include <iostream>
 #include "treesize.h"
+#include "CLI/CLI.hpp"
 
-void printUsage()
+int main(int argc, char **argv)
 {
-    std::cerr << "Usage: treesize-cli <directory>" << std::endl;
-}
+    CLI::App app{"treesize-cli description"};
 
-int main(int argc, char *argv[])
-{
-    if (argc != 2)
-    {
-        printUsage();
-        return 1;
-    }
+    std::string path;
+    int depth;
+    app.add_option("path", path, "directory to scan")
+        ->required();
+    app.add_option("-d,--depth", depth, "depth of directory tree to display")
+        ->default_val(-1);
 
-    FileModel dir = Treesize::getDirectorySize(argv[1]);
-    std::cout << "Total size of the directory: " << dir.getTotalSize() << std::endl;
+    CLI11_PARSE(app, argc, argv);
+
+    std::cout << "depth: " << depth << ", path: " << path << std::endl;
+
+    FileModel rootDir = Treesize::getDirectorySize(path, depth);
+    std::cout << "Total size of the directory: " << rootDir.getTotalSize() << std::endl;
 
     return 0;
 }

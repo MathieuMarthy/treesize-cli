@@ -1,5 +1,6 @@
 [requires]
 stb/cci.20240531
+cli11/2.6.0
 
 [generators]
 CMakeDeps
