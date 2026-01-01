@@ -1,14 +1,14 @@
 #include "fileModel.h"
 #include <iostream>
 
-int FileModel::getTotalSize()
+size_t FileModel::getTotalSize() const
 {
-    long childs_size = 0;
+    size_t childsSize = 0;
 
-    for (FileModel &child : childs)
+    for (const FileModel &child : childs)
     {
-        childs_size += child.getTotalSize();
+        childsSize += child.getTotalSize();
     }
 
-    return childs_size + size;
+    return childsSize + size;
 }

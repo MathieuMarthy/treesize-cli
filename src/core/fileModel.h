@@ -13,8 +13,8 @@ public:
     }
 
     std::string path;
-    long size = 0;
+    size_t size = 0;
     std::vector<FileModel> childs = std::vector<FileModel>();
 
-    int getTotalSize();
+    size_t getTotalSize() const;
 };

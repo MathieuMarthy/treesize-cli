@@ -6,8 +6,8 @@
 class Treesize
 {
 public:
-    static FileModel getDirectorySize(const std::string &path, int depth);
+    static FileModel getDirectorySize(const std::string &path);
 
 private:
-    static void scanDirectory(FileModel &parentDirectory, int currentDepth, int maxDepth);
+    static void scanDirectory(FileModel &parentDirectory);
 };

@@ -7,7 +7,7 @@
 
 namespace fs = std::filesystem;
 
-FileModel Treesize::getDirectorySize(const std::string &path, int depth)
+FileModel Treesize::getDirectorySize(const std::string &path)
 {
     FileModel rootDir(path);
 
@@ -16,7 +16,7 @@ FileModel Treesize::getDirectorySize(const std::string &path, int depth)
     return rootDir;
 }
 
-void Treesize::scanDirectory(FileModel &parentDirectory, int currentDepth, int maxDepth)
+void Treesize::scanDirectory(FileModel &parentDirectory)
 {
     for (const auto &entry : fs::directory_iterator(parentDirectory.path))
     {
@@ -25,14 +25,14 @@ void Treesize::scanDirectory(FileModel &parentDirectory, int currentDepth, int m
             continue;
         }
 
-        // attach the file to his parent
+        // attach the file to its parent
         parentDirectory.childs.emplace_back(entry.path().string());
         FileModel &file = parentDirectory.childs.back();
 
-        if (entry.is_directory() && (maxDepth == -1 || currentDepth < maxDepth))
+        if (entry.is_directory())
         {
             // recursive call
-            Treesize::scanDirectory(file, currentDepth + 1, maxDepth);
+            Treesize::scanDirectory(file);
         }
         else
         {
