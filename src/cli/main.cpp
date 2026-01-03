@@ -1,37 +1,12 @@
 #include <iostream>
-#include <format>
-#include "treesize.h"
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 #include "CLI/CLI.hpp"
 
-std::string getFileSizeString(size_t fileSize)
-{
-    uint8_t suffixIndex = 0;
-    float size = fileSize;
-
-    while (size > 1024 && cpt < 4)
-    {
-        suffixIndex++;
-        size /= 1024;
-    }
-
-    static const char *suffix[] = {"o", "Ko", "Mo", "Go", "To"};
-    return std::format("{:.2f}", size) + ' ' + suffix[suffixIndex];
-}
-
-void display(const FileModel &file, int currentDepth, int maxDepth)
-{
-    if (maxDepth != -1 && currentDepth > maxDepth)
-    {
-        return;
-    }
-
-    std::cout << std::string(currentDepth * 2, ' ') << file.path << " - " << getFileSizeString(file.getTotalSize()) << std::endl;
-
-    for (const auto &child : file.childs)
-    {
-        display(child, currentDepth + 1, maxDepth);
-    }
-}
+#include "treesize.hpp"
+#include "display.hpp"
 
 int main(int argc, char **argv)
 {
@@ -45,6 +20,10 @@ int main(int argc, char **argv)
         ->default_val(-1);
 
     CLI11_PARSE(app, argc, argv);
+
+#ifdef _WIN32
+    SetConsoleOutputCP(CP_UTF8); // Set the console to UTF-8.
+#endif
 
     FileModel rootDir = Treesize::getDirectorySize(path);
     std::cout << "Total size of the directory: " << rootDir.getTotalSize() << std::endl;

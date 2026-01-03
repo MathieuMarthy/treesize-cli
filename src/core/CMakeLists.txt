@@ -1,9 +1,9 @@
 find_package(stb REQUIRED)
 
 add_library(core STATIC
-    treesize.h
+    treesize.hpp
     treesize.cpp
-    fileModel.h
+    fileModel.hpp
     fileModel.cpp
 )
 

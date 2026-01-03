@@ -1,5 +1,5 @@
-#include "treesize.h"
-#include "fileModel.h"
+#include "treesize.hpp"
+#include "fileModel.hpp"
 #include <vector>
 #include <string>
 #include <filesystem>
@@ -9,7 +9,7 @@ namespace fs = std::filesystem;
 
 FileModel Treesize::getDirectorySize(const std::string &path)
 {
-    FileModel rootDir(path);
+    FileModel rootDir(path, true);
 
     Treesize::scanDirectory(rootDir);
 
@@ -26,8 +26,8 @@ void Treesize::scanDirectory(FileModel &parentDirectory)
         }
 
         // attach the file to its parent
-        parentDirectory.childs.emplace_back(entry.path().string());
-        FileModel &file = parentDirectory.childs.back();
+        parentDirectory.children.emplace_back(entry.path().string(), entry.is_directory());
+        FileModel &file = parentDirectory.children.back();
 
         if (entry.is_directory())
         {

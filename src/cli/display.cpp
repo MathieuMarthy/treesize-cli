@@ -1,0 +1,42 @@
+#include <string>
+#include <format>
+#include <iostream>
+
+#include "display.hpp"
+#include "fileModel.hpp"
+
+const char *suffix[] = {"o", "Ko", "Mo", "Go", "To"};
+
+std::string getFileSizeString(const FileModel &file)
+{
+    uint8_t suffixIndex = 0;
+    float size = file.getTotalSize();
+
+    while (size > 1024 && suffixIndex < 4)
+    {
+        suffixIndex++;
+        size /= 1024;
+    }
+
+    return std::format(
+        "{} - {} {:.2f} {}",
+        (file.isDirectory) ? "📂" : "📄",
+        file.path,
+        size,
+        suffix[suffixIndex]);
+}
+
+void display(const FileModel &file, int currentDepth, int maxDepth)
+{
+    if (maxDepth != -1 && currentDepth > maxDepth)
+    {
+        return;
+    }
+
+    std::cout << std::string(currentDepth * 4, ' ') << getFileSizeString(file) << std::endl;
+
+    for (const auto &child : file.children)
+    {
+        display(child, currentDepth + 1, maxDepth);
+    }
+}
