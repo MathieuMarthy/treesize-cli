@@ -14,10 +14,13 @@ int main(int argc, char **argv)
 
     std::string path;
     int depth;
+    bool showOnlyDirectory;
     app.add_option("path", path, "directory to scan")
         ->required();
     app.add_option("-d,--depth", depth, "depth of directory tree to display")
         ->default_val(-1);
+    app.add_flag("-o,--only-directory", showOnlyDirectory)
+        ->default_val(false);
 
     CLI11_PARSE(app, argc, argv);
 
@@ -27,7 +30,7 @@ int main(int argc, char **argv)
 
     FileModel rootDir = Treesize::getDirectorySize(path);
     std::cout << "Total size of the directory: " << rootDir.getTotalSize() << std::endl;
-    display(rootDir, 0, depth);
+    display(rootDir, 0, depth, showOnlyDirectory);
 
     return 0;
 }

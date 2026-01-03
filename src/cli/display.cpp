@@ -7,7 +7,7 @@
 
 const char *suffix[] = {"o", "Ko", "Mo", "Go", "To"};
 
-std::string getFileSizeString(const FileModel &file)
+std::string getFileString(const FileModel &file)
 {
     uint8_t suffixIndex = 0;
     float size = file.getTotalSize();
@@ -26,17 +26,18 @@ std::string getFileSizeString(const FileModel &file)
         suffix[suffixIndex]);
 }
 
-void display(const FileModel &file, int currentDepth, int maxDepth)
+void display(const FileModel &file, int currentDepth, const int maxDepth, const bool showOnlyDirectory)
 {
     if (maxDepth != -1 && currentDepth > maxDepth)
     {
         return;
     }
 
-    std::cout << std::string(currentDepth * 4, ' ') << getFileSizeString(file) << std::endl;
+    if (!showOnlyDirectory || file.isDirectory)
+        std::cout << std::string(currentDepth * 4, ' ') << getFileString(file) << std::endl;
 
     for (const auto &child : file.children)
     {
-        display(child, currentDepth + 1, maxDepth);
+        display(child, currentDepth + 1, maxDepth, showOnlyDirectory);
     }
 }

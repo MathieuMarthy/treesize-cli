@@ -4,6 +4,6 @@
 
 #include "fileModel.hpp"
 
-std::string getFileSizeString(const FileModel &file);
+std::string getFileString(const FileModel &file);
 
-void display(const FileModel &file, int currentDepth, int maxDepth);
+void display(const FileModel &file, int currentDepth, int maxDepth, const bool showOnlyDirectory);
