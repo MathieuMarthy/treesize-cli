@@ -40,3 +40,4 @@ void Treesize::scanDirectory(FileModel &parentDirectory)
         }
     }
 }
+

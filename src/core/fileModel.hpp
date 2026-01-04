@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <cstdint>
+#include <optional>
 
 class FileModel
 {
@@ -17,6 +18,8 @@ public:
     bool isDirectory;
     size_t size = 0;
     std::vector<FileModel> children;
+    mutable std::optional<size_t> cachedTotalSize;
 
-    size_t getTotalSize() const;
+    size_t getTotalSize(const bool useCache = true) const;
+    void getAllFilesRecursively(std::vector<const FileModel *> &allFiles) const;
 };

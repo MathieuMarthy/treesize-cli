@@ -28,16 +28,37 @@ std::string getFileString(const FileModel &file)
 
 void display(const FileModel &file, int currentDepth, const int maxDepth, const bool showOnlyDirectory)
 {
-    if (maxDepth != -1 && currentDepth > maxDepth)
+    if (maxDepth != UNLIMITED_DEPTH && currentDepth > maxDepth)
     {
         return;
     }
 
     if (!showOnlyDirectory || file.isDirectory)
+    {
         std::cout << std::string(currentDepth * 4, ' ') << getFileString(file) << std::endl;
+    }
 
     for (const auto &child : file.children)
     {
         display(child, currentDepth + 1, maxDepth, showOnlyDirectory);
+    }
+}
+
+void displaySortedList(const FileModel &file, const bool showOnlyDirectory)
+{
+    std::vector<const FileModel *> allFiles;
+    file.getAllFilesRecursively(allFiles);
+
+    std::sort(allFiles.begin(), allFiles.end(), [](const FileModel *a, const FileModel *b)
+              { return a->getTotalSize() > b->getTotalSize(); });
+
+    for (const auto &f : allFiles)
+    {
+        if (showOnlyDirectory && !f->isDirectory)
+        {
+            continue;
+        }
+
+        std::cout << getFileString(*f) << std::endl;
     }
 }
