@@ -26,25 +26,25 @@ std::string getFileString(const FileModel &file)
         suffix[suffixIndex]);
 }
 
-void display(const FileModel &file, int currentDepth, const int maxDepth, const bool showOnlyDirectory)
+void display(const FileModel &file, int currentDepth, const CliArguments &cliArgs)
 {
-    if (maxDepth != UNLIMITED_DEPTH && currentDepth > maxDepth)
+    if (cliArgs.depth != UNLIMITED_DEPTH && currentDepth > cliArgs.depth)
     {
         return;
     }
 
-    if (!showOnlyDirectory || file.isDirectory)
+    if ((!file.isDirectory && !cliArgs.showOnlyDirectory) || (file.isDirectory && !cliArgs.showOnlyFiles))
     {
         std::cout << std::string(currentDepth * 4, ' ') << getFileString(file) << std::endl;
     }
 
     for (const auto &child : file.children)
     {
-        display(child, currentDepth + 1, maxDepth, showOnlyDirectory);
+        display(child, currentDepth + 1, cliArgs);
     }
 }
 
-void displaySortedList(const FileModel &file, const bool showOnlyDirectory)
+void displaySortedList(const FileModel &file, const CliArguments &cliArgs)
 {
     std::vector<const FileModel *> allFiles;
     file.getAllFilesRecursively(allFiles);
@@ -54,11 +54,9 @@ void displaySortedList(const FileModel &file, const bool showOnlyDirectory)
 
     for (const auto &f : allFiles)
     {
-        if (showOnlyDirectory && !f->isDirectory)
+        if ((!f->isDirectory && !cliArgs.showOnlyDirectory) || (f->isDirectory && !cliArgs.showOnlyFiles))
         {
-            continue;
+            std::cout << getFileString(*f) << std::endl;
         }
-
-        std::cout << getFileString(*f) << std::endl;
     }
 }

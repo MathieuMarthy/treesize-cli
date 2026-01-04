@@ -3,11 +3,10 @@
 #include <string>
 
 #include "fileModel.hpp"
-
-constexpr int UNLIMITED_DEPTH = -1;
+#include "cliArguments.hpp"
 
 std::string getFileString(const FileModel &file);
 
-void display(const FileModel &file, int currentDepth, int maxDepth, const bool showOnlyDirectory);
+void display(const FileModel &file, int currentDepth, const CliArguments &cliArgs);
 
-void displaySortedList(const FileModel &file, const bool showOnlyDirectory);
+void displaySortedList(const FileModel &file, const CliArguments &cliArgs);
