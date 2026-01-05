@@ -30,18 +30,21 @@ jobs:
       run: conan install . --output-folder=build --build=missing -s build_type=Release
 
     - name: Configure CMake
-      run: cmake --preset conan-release
+      run: cmake --preset conan-default
 
     - name: Build
       run: cmake --build --preset conan-release
 
+    - name: Install NSIS
+      run: choco install nsis -y
+
     - name: Package
       run: |
-        cd build/build/Release
-        cpack
+        cd build/build
+        cpack -C Release
 
     - name: Upload Release Asset
       uses: softprops/action-gh-release@v1
       if: startsWith(github.ref, 'refs/tags/')
       with:
-        files: build/build/Release/*.exe
+        files: build/build/*.exe
