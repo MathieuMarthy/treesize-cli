@@ -1,6 +1,8 @@
 #include <string>
 #include <format>
 #include <iostream>
+#include <vector>
+#include <algorithm>
 
 #include "display.hpp"
 #include "fileModel.hpp"
