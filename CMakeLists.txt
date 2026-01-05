@@ -13,3 +13,21 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 add_subdirectory(src/core)
 add_subdirectory(src/cli)
 
+# CPack Configuration
+set(CPACK_PACKAGE_VENDOR "MyCompany")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Treesize CLI Tool")
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/README.md") # Using README as license placeholder
+set(CPACK_PACKAGE_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
+set(CPACK_PACKAGE_VERSION_MINOR ${PROJECT_VERSION_MINOR})
+set(CPACK_PACKAGE_VERSION_PATCH ${PROJECT_VERSION_PATCH})
+
+if(WIN32)
+    set(CPACK_GENERATOR "NSIS")
+    set(CPACK_NSIS_MODIFY_PATH ON) # Adds option to add to PATH
+    set(CPACK_NSIS_DISPLAY_NAME "Treesize CLI")
+    set(CPACK_NSIS_PACKAGE_NAME "Treesize CLI")
+endif()
+
+include(CPack)
+
+
