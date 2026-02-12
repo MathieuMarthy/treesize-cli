@@ -9,10 +9,10 @@
 
 const char *suffix[] = {"o", "Ko", "Mo", "Go", "To"};
 
-std::string getFileString(const FileModel &file)
+std::string getDisplaybleFileSize(const float fileSize)
 {
     uint8_t suffixIndex = 0;
-    float size = file.getTotalSize();
+    float size = fileSize;
 
     while (size > 1024 && suffixIndex < 4)
     {
@@ -20,12 +20,17 @@ std::string getFileString(const FileModel &file)
         size /= 1024;
     }
 
+    return std::format("{:.2f} {}", size, suffix[suffixIndex]);
+}
+
+std::string getFileString(const FileModel &file)
+{
     return std::format(
-        "{} - {} {:.2f} {}",
+        "{} - {} {}",
         (file.isDirectory) ? "📂" : "📄",
         file.path,
-        size,
-        suffix[suffixIndex]);
+        getDisplaybleFileSize(file.getTotalSize())
+    );
 }
 
 void display(const FileModel &file, int currentDepth, const CliArguments &cliArgs)

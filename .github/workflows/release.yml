@@ -10,41 +10,73 @@ permissions:
 
 jobs:
   build:
-    runs-on: windows-latest
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            package_type: deb
+            artifact_pattern: "*.deb"
+            cmake_configure_preset: conan-release
+            cmake_build_preset: conan-release
+          - os: windows-latest
+            package_type: exe
+            artifact_pattern: "*.exe"
+            cmake_configure_preset: conan-default
+            cmake_build_preset: conan-release
+
+    runs-on: ${{ matrix.os }}
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Install Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.x'
+      - name: Install Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
 
-    - name: Install Conan
-      run: pip install conan
+      - name: Install Conan
+        run: pip install conan
 
-    - name: Configure Conan
-      run: conan profile detect
+      - name: Configure Conan
+        run: conan profile detect
 
-    - name: Install Dependencies
-      run: conan install . --output-folder=build --build=missing -s build_type=Release
+      - name: Install Dependencies
+        run: conan install . --output-folder=build --build=missing -s build_type=Release
 
-    - name: Configure CMake
-      run: cmake --preset conan-default
+      - name: Configure CMake
+        run: cmake --preset ${{ matrix.cmake_configure_preset }}
 
-    - name: Build
-      run: cmake --build --preset conan-release
+      - name: Build
+        run: cmake --build --preset ${{ matrix.cmake_build_preset }}
 
-    - name: Install NSIS
-      run: choco install nsis -y
+      - name: Install NSIS (Windows)
+        if: matrix.os == 'windows-latest'
+        run: choco install nsis -y
 
-    - name: Package
-      run: |
-        cd build/build
-        cpack -C Release
+      - name: Package
+        run: |
+          find build -name "CMakeCache.txt" -type f
+          BUILD_DIR=$(find build -name "CMakeCache.txt" -type f -exec dirname {} \;)
+          echo "Build directory: $BUILD_DIR"
+          cd "$BUILD_DIR"
+          cpack -C Release
+          ls -la
+        shell: bash
 
-    - name: Upload Release Asset
-      uses: softprops/action-gh-release@v1
-      if: startsWith(github.ref, 'refs/tags/')
-      with:
-        files: build/build/*.exe
+      - name: Find package
+        id: find_package
+        run: |
+          if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
+            PACKAGE=$(find build -name "*.deb" -type f -not -path "*/CPack_Packages/*" | head -n 1)
+          else
+            PACKAGE=$(find build -name "*.exe" -type f -not -path "*/CPack_Packages/*" | head -n 1)
+          fi
+          echo "package=$PACKAGE" >> $GITHUB_OUTPUT
+          echo "Found package: $PACKAGE"
+        shell: bash
+
+      - name: Upload Release Asset
+        uses: softprops/action-gh-release@v1
+        if: github.event_name == 'release' || startsWith(github.ref, 'refs/tags/')
+        with:
+          files: ${{ steps.find_package.outputs.package }}
