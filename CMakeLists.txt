@@ -14,20 +14,28 @@ add_subdirectory(src/core)
 add_subdirectory(src/cli)
 
 # CPack Configuration
+set(CPACK_PACKAGE_NAME "treesize-cli")
 set(CPACK_PACKAGE_VENDOR "MyCompany")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Treesize CLI Tool")
+set(CPACK_PACKAGE_DESCRIPTION "A command-line tool to analyze directory sizes")
 set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/README.md") # Using README as license placeholder
 set(CPACK_PACKAGE_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
 set(CPACK_PACKAGE_VERSION_MINOR ${PROJECT_VERSION_MINOR})
 set(CPACK_PACKAGE_VERSION_PATCH ${PROJECT_VERSION_PATCH})
+set(CPACK_PACKAGE_CONTACT "mathieu.marthy@gmail.com")
 
 if(WIN32)
     set(CPACK_GENERATOR "NSIS")
     set(CPACK_NSIS_MODIFY_PATH ON) # Adds option to add to PATH
     set(CPACK_NSIS_DISPLAY_NAME "Treesize CLI")
     set(CPACK_NSIS_PACKAGE_NAME "Treesize CLI")
+elseif(UNIX AND NOT APPLE)
+    set(CPACK_GENERATOR "DEB")
+    set(CPACK_DEBIAN_PACKAGE_MAINTAINER "${CPACK_PACKAGE_CONTACT}")
+    set(CPACK_DEBIAN_PACKAGE_SECTION "utils")
+    set(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
+    set(CPACK_DEBIAN_PACKAGE_DEPENDS "libc6 (>= 2.34), libstdc++6 (>= 11)")
+    set(CPACK_DEBIAN_FILE_NAME DEB-DEFAULT)
 endif()
 
 include(CPack)
-
-

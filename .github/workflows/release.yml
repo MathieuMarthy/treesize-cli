@@ -10,41 +10,52 @@ permissions:
 
 jobs:
   build:
-    runs-on: windows-latest
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            package_type: deb
+            artifact_pattern: "*.deb"
+          - os: windows-latest
+            package_type: exe
+            artifact_pattern: "*.exe"
+
+    runs-on: ${{ matrix.os }}
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Install Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.x'
+      - name: Install Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
 
-    - name: Install Conan
-      run: pip install conan
+      - name: Install Conan
+        run: pip install conan
 
-    - name: Configure Conan
-      run: conan profile detect
+      - name: Configure Conan
+        run: conan profile detect
 
-    - name: Install Dependencies
-      run: conan install . --output-folder=build --build=missing -s build_type=Release
+      - name: Install Dependencies
+        run: conan install . --output-folder=build --build=missing -s build_type=Release
 
-    - name: Configure CMake
-      run: cmake --preset conan-default
+      - name: Configure CMake
+        run: cmake --preset conan-default
 
-    - name: Build
-      run: cmake --build --preset conan-release
+      - name: Build
+        run: cmake --build --preset conan-release
 
-    - name: Install NSIS
-      run: choco install nsis -y
+      - name: Install NSIS (Windows)
+        if: matrix.os == 'windows-latest'
+        run: choco install nsis -y
 
-    - name: Package
-      run: |
-        cd build/build
-        cpack -C Release
+      - name: Package
+        run: |
+          cd build/build
+          cpack -C Release
 
-    - name: Upload Release Asset
-      uses: softprops/action-gh-release@v1
-      if: startsWith(github.ref, 'refs/tags/')
-      with:
-        files: build/build/*.exe
+      - name: Upload Release Asset
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: build/build/${{ matrix.artifact_pattern }}
