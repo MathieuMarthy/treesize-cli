@@ -51,11 +51,11 @@ jobs:
 
       - name: Package
         run: |
-          cd build/build
+          cd build/Release
           cpack -C Release
 
       - name: Upload Release Asset
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: build/build/${{ matrix.artifact_pattern }}
+          files: build/Release/${{ matrix.artifact_pattern }}
