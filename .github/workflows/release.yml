@@ -56,11 +56,23 @@ jobs:
           echo "Build directory: $BUILD_DIR"
           cd "$BUILD_DIR"
           cpack -C Release
+          ls -la
+        shell: bash
+
+      - name: Find package
+        id: find_package
+        run: |
+          if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
+            PACKAGE=$(find build -name "*.deb" -type f)
+          else
+            PACKAGE=$(find build -name "*.exe" -type f)
+          fi
+          echo "package=$PACKAGE" >> $GITHUB_OUTPUT
+          echo "Found package: $PACKAGE"
         shell: bash
 
       - name: Upload Release Asset
         uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
+        if: github.event_name == 'release' || startsWith(github.ref, 'refs/tags/')
         with:
-          files: |
-            build/**/${{ matrix.artifact_pattern }}
+          files: ${{ steps.find_package.outputs.package }}
