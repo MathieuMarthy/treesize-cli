@@ -51,11 +51,16 @@ jobs:
 
       - name: Package
         run: |
-          cd build/Release
+          find build -name "CMakeCache.txt" -type f
+          BUILD_DIR=$(find build -name "CMakeCache.txt" -type f -exec dirname {} \;)
+          echo "Build directory: $BUILD_DIR"
+          cd "$BUILD_DIR"
           cpack -C Release
+        shell: bash
 
       - name: Upload Release Asset
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: build/Release/${{ matrix.artifact_pattern }}
+          files: |
+            build/**/${{ matrix.artifact_pattern }}
