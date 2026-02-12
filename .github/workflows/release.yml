@@ -63,9 +63,9 @@ jobs:
         id: find_package
         run: |
           if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
-            PACKAGE=$(find build -name "*.deb" -type f)
+            PACKAGE=$(find build -name "*.deb" -type f -not -path "*/CPack_Packages/*" | head -n 1)
           else
-            PACKAGE=$(find build -name "*.exe" -type f)
+            PACKAGE=$(find build -name "*.exe" -type f -not -path "*/CPack_Packages/*" | head -n 1)
           fi
           echo "package=$PACKAGE" >> $GITHUB_OUTPUT
           echo "Found package: $PACKAGE"
