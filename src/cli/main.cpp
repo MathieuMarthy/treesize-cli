@@ -35,7 +35,7 @@ int main(int argc, char **argv)
     }
 
     FileModel rootDir = Treesize::getDirectorySize(cliArgs.path);
-    std::cout << "Total size of the directory: " << rootDir.getTotalSize() << std::endl;
+    std::cout << "Total size of the directory: " << getDisplaybleFileSize(rootDir.getTotalSize()) << std::endl;
 
     if (cliArgs.displayAsSortedList)
     {
