@@ -1,10 +1,11 @@
-# bonsize 🐢
+<div align="center">
+  <img src="assets/banner.png" alt="bonsize banner" width="100%">
 
-A CLI tool to display directory tree sizes.
+  # bonsize
+</div>
 
-## Description
 
-`bonsize` allows you to quickly analyze and display the size of directories and files in a tree structure, making it easy to identify which files and folders are taking up the most disk space. It comes with both a fast Command-Line Interface (CLI) and an interactive Graphical User Interface (GUI).
+bonsize allows you to quickly analyze and display the size of directories and files in a tree structure, making it easy to identify which files and folders are taking up the most disk space. It comes with both a fast Command-Line Interface (CLI) and an interactive Graphical User Interface (GUI).
 
 ## Graphical User Interface (GUI)
 
